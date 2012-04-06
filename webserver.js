@@ -1,3 +1,6 @@
+/**
+ * This file is just to test the application
+ */
 var express = require('express');
 var app = module.exports = express.createServer();
 app.configure(function () {
