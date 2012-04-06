@@ -27,6 +27,19 @@
 		return res;
 	}
 	
+	function bind2way(name, jel, model){
+		jel.find('[name="' + name + '"]').each(function(i, el){
+			var _jel = $(el);
+			var val = model.get(name);
+			if(val){
+				_jel.val(val);
+				_jel.change(function(){
+					model.set(name, _jel.val());
+				});
+			}
+		});	
+	}
+	
 	/**
 	 * Inject handleView method
 	 */
@@ -40,17 +53,10 @@
 			var jsonModel = unwrapFunctions(model.toJSON());
 			var jel = $(this.el); 
 			jel.html(self.compiledTemplate(jsonModel));
-			jel.find('input').each(function(i, el){
-				var _jel = $(el);
-				var name = _jel.attr('name');
-				var val = model.get(name);
-				if(val){
-					_jel.val(val);
-					_jel.change(function(){
-						model.set(name, _jel.val());
-					});
-				}
-			});
+			
+			for(name in jsonModel){
+				bind2way(name, jel, model);
+			}
 		}
 	});	
 })();

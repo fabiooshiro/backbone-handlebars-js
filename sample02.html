@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Sample 01</title>
+		<script type="text/javascript" src="dependencies/jquery-1.7.1.js"></script>
+		<script type="text/javascript" src="dependencies/underscore-1.3.1.js"></script>
+		<script type="text/javascript" src="dependencies/backbone.js"></script>
+		<script type="text/javascript" src="dependencies/handlebars-1.0.0.beta.6.js"></script>
+		<script type="text/javascript" src="handlebars-backbone.js"></script>
+		<script type="text/javascript">
+			$(function(){
+				var Person = Backbone.Model.extend({
+					defaults: {
+						name: 'Michelangelo',
+						bornYear: 1475,
+						diedYear: 1564,
+						aged: function(){
+							return this.diedYear - this.bornYear;
+						},
+						sculpture: {
+							name: 'Piet&agrave;'
+						}
+					}
+				})
+			
+				Handlebars.registerHelper('aprox', function(val) {
+					return "~ " + val;
+				});
+				
+				var PersonView = Backbone.View.extend({
+					initialize: function(){
+						_.bindAll(this, "render");
+						this.model.bind('change', this.render);
+					},
+					template: $("#template"),
+					render: function () {
+						this.handleView(this.model);
+				        return this;
+				    }
+				});
+				
+				new PersonView({el: $("#person"), model: new Person()}).render();	
+			});
+		</script>
+	</head>
+	<body>
+		<script id="template" type="text/x-handlebars-template">
+			<div><strong>{{name}}</strong></div>
+			<div>Born: <input name="bornYear" /></div>
+			<div>
+				Died: 
+				<select name="diedYear" >
+					<option value="1563">1563</option>
+					<option value="1564">1564</option>
+					<option value="1565">1565</option>
+				</select>
+			</div>
+			<div>Aged: {{aprox aged}} (calculated)</div>
+			<div>Sculpture: {{sculpture.name}}</div>
+		</script>
+		<div id="person"></div>
+	</body>
+</html>
