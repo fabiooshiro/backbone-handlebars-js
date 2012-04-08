@@ -37,9 +37,10 @@
 	var htmlesc = Handlebars.Utils.escapeExpression;
 	var widgets = {
 		select: function(name, val, opts){
+			var source = typeof(opts.source) == 'function' ? opts.source() : opts.source;
 			var out = $('<select>').attr('name', name);
-			for(var i = 0; i < opts.source.length; i ++){
-				var item = opts.source[i];
+			for(var i = 0; i < source.length; i ++){
+				var item = source[i];
 				out.append($('<option>').attr('value', item.get('id')).text(item.get('name')));
 			}
 			return $('<div>').append(out).html();
@@ -47,7 +48,7 @@
 	};
 	
 	var handleWidget;
-	Handlebars.registerHelper('handleWidget', function(name, v2) {
+	Handlebars.registerHelper('backHand', function(name, v2) {
 		var opts = handleWidget[name];
 		var obj = this[name];
 		if(opts){
@@ -79,9 +80,10 @@
 			_jel.change(function(){
 				var val = _jel.val();
 				if(handleWidget && handleWidget[name]){
-					for(var i = 0; i < handleWidget[name].source.length; i++){
-						if(handleWidget[name].source[i].id == val){
-							val = handleWidget[name].source[i];	
+					var source = typeof(handleWidget[name].source) == 'function' ? handleWidget[name].source() : handleWidget[name].source;
+					for(var i = 0; i < source.length; i++){
+						if(source[i].id == val){
+							val = source[i];	
 							break;
 						}
 					} 
